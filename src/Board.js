@@ -78,35 +78,32 @@
     // --------------------------------------------------------------
     //
     // test if a specific row on this board contains a conflict
-    rowLooperFunction: function(x) {
-      var row = this.get(x);
-
-      return _.reduce(row, function(memo, value) {
-        return memo + value;
-      });
-
-    },
 
     hasRowConflictAt: function(rowIndex) {
-      var row = this.rowLooperFunction(rowIndex);
-      console.log(row);
-      if (row > 1) {
-        return true; // fixme
-      }
+      var rows = this.rows();
+      var chosenRow = rows[rowIndex];
+      return chosenRow;
     },
 
     // test if any rows on this board contain conflicts
     //make some kind of reference to what the conflicts are
     //rather than the matrices themselves
     hasAnyRowConflicts: function() {
-      var row1 = this.rowLooperFunction(0);
-      var row2 = this.rowLooperFunction(1);
-      var row3 = this.rowLooperFunction(2);
-      var row4 = this.rowLooperFunction(3);
+      var rows = this.rows();
+      var storageArray = [];
 
-      if (row1 > 1 || row2 > 1 || row3 > 1 || row4 > 1) {
-        return true;
-      } 
+      for (var i = 0; i < rows.length; i++) {
+        var singleValue = _.reduce(rows[i], function(accumulator, value) {
+          return accumulator + value;
+        });
+        storageArray.push(singleValue);
+      }
+
+      for (var j = 0; j < storageArray.length; j++) {
+        if (storageArray[j] > 1) {
+          return true;
+        }
+      }
         return false;
     },
 
@@ -138,18 +135,37 @@
     },
 
     hasColConflictAt: function(colIndex) {
+      var rows = this.rows();
+      var column = [];
+
+      for (var i = 0; i < rows.length; i++) {
+        column.push(rows[i][colIndex]);
+      };
+      
+      for (var j = 0; j < column.length; j++) {
+        if (column[j] > 1) {
+          return true;
+        }
+      }
+
       return false; // fixme
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      var column1 = this.columnLooperFunction(0);
-      var column2 = this.columnLooperFunction(1);
-      var column3 = this.columnLooperFunction(2);
-      var column4 = this.columnLooperFunction(3);
+      var rows = this.rows();
+      var column = [];
 
-      if (column1 > 1 || column2 > 1 || column3 > 1 || column4 > 1 ) {
-        return true;
+      for (var i = 0; i < rows.length; i++) {
+        var oneColumn = this.hasColConflictAt(i);
+        column.push(oneColumn);
+      };
+
+      console.log(column);
+      for (var j = 0; j < column.length; j++) {
+        if (column[j] > 1) {
+          return true;
+        }
       }
       return false; // fixme
     },
