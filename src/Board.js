@@ -113,6 +113,7 @@
     // --------------------------------------------------------------
     //
     // test if a specific column on this board contains a conflict
+    /*
     columnLooperFunction: function(column) {
       var row1 = this.get(0);
       var row2 = this.get(1);
@@ -133,6 +134,7 @@
         return memo + value;
       })
     },
+    */
 
     hasColConflictAt: function(colIndex) {
       var rows = this.rows();
@@ -142,32 +144,39 @@
         column.push(rows[i][colIndex]);
       };
       
-      for (var j = 0; j < column.length; j++) {
-        if (column[j] > 1) {
-          return true;
-        }
-      }
-
-      return false; // fixme
+      // for (var j = 0; j < column.length; j++) {
+      //   if (column[j] > 1) {
+      //     return true;
+      //   }
+      // }
+      //console.log(column);
+      return column; // fixme
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
       var rows = this.rows();
       var column = [];
-
+      //making our columns
       for (var i = 0; i < rows.length; i++) {
-        var oneColumn = this.hasColConflictAt(i);
-        column.push(oneColumn);
+        column.push(this.hasColConflictAt(i));
       };
 
-      console.log(column);
-      for (var j = 0; j < column.length; j++) {
-        if (column[j] > 1) {
+        var colinStorage = [];
+
+      for (var i = 0; i < column.length; i++) {
+        var singleValue = _.reduce(column[i], function(accumulator, value) {
+          return accumulator + value;
+        });
+        colinStorage.push(singleValue);
+      }
+
+      for (var j = 0; j < colinStorage.length; j++) {
+        if (colinStorage[j] > 1) {
           return true;
         }
       }
-      return false; // fixme
+        return false;
     },
 
 
@@ -176,39 +185,6 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
-    majorDiagonalChecker: function() {
-      //if we iterate over an array, to see diagonally we +1 to the index of the array
-      var diagonalHolder = [];
-      //lets look at them as rows
-      var row1 = this.get(0);
-      var row2 = this.get(1);
-      var row3 = this.get(2);
-      var row4 = this.get(3);
-
-      var diagonal1 = [row3[0], row4[1]];
-      var diagonal2 = [row2[0], row3[1], row4[2]];
-      var diagonal3 = [row1[0], row2[1], row3[2], row4[3]];
-      var diagonal4 = [row1[1], row2[2], row3[3]];
-      var diagonal5 = [row1[2], row2[3]];
-
-      diagonalHolder.push(_.reduce(diagonal1, function(memo, value) {
-        return memo + value;
-      }));
-      diagonalHolder.push(_.reduce(diagonal2, function(memo, value) {
-        return memo + value;
-      }));
-      diagonalHolder.push(_.reduce(diagonal3, function(memo, value) {
-        return memo + value;
-      }));
-      diagonalHolder.push(_.reduce(diagonal4, function(memo, value) {
-        return memo + value;
-      }));
-      diagonalHolder.push(_.reduce(diagonal5, function(memo, value) {
-        return memo + value;
-      }));
-
-      return diagonalHolder;
-    },
 
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
       var holder = [];
@@ -218,54 +194,36 @@
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      var hasDiagonal = this.majorDiagonalChecker();
-      for (var i = 0; i < hasDiagonal.length; i++) {
-        if (hasDiagonal[i] > 1) {
-          return true;
+     
+      var rows = this.rows();
+      var valueStorage = [];
+    var subroutine = function(board){
+        // debugger;
+      for (var i = 0; i < board.length - 1; i ++) {
+
+        for(var j = 0; j < board[i].length - 1; j++) {
+          if(board[i][j] === 1){
+            console.log(board[i +1][j +1])
+            //console.log('this is board[i]', board[i])
+           // console.log('this is board[i+1]', board[i+1]);
+            if(board[i +1][j +1] === 1) {
+              return true;
+            }// }else{ 
+            //   // console.log(board[i + 2]);
+            //   if(board[i +2][j+2]){
+            //   return subroutine(board[i + 2][j + 2]);
+              //  }
+          }
         }
       }
-
-      return false; // fixme
+            // return false;
+      }
+        return subroutine(rows);
     },
-
     // Minor Diagonals - go from top-right to bottom-left
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
-    minorDiagonalChecker: function() {
-      var diagonalHolder = [];
-      //lets look at them as rows
-      var row1 = this.get(0);
-      var row2 = this.get(1);
-      var row3 = this.get(2);
-      var row4 = this.get(3);
-
-      var diagonal1 = [row1[1], row2[0]];
-      var diagonal2 = [row1[2], row2[1], row3[0]]; 
-      var diagonal3 = [row1[3], row2[2], row3[1], row4[0]];
-      var diagonal4 = [row2[3], row3[2], row4[1]];
-      var diagonal5 = [row3[3], row4[2]];
-
-      diagonalHolder.push(_.reduce(diagonal1, function(memo, value) {
-        return memo + value;
-      }));
-      diagonalHolder.push(_.reduce(diagonal2, function(memo, value) {
-        return memo + value;
-      }));
-      diagonalHolder.push(_.reduce(diagonal3, function(memo, value) {
-        return memo + value;
-      }));
-      diagonalHolder.push(_.reduce(diagonal4, function(memo, value) {
-        return memo + value;
-      }));
-      diagonalHolder.push(_.reduce(diagonal5, function(memo, value) {
-        return memo + value;
-      }));
-      
-      return diagonalHolder;
-
-    },
-
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
 
       return false; // fixme
@@ -273,13 +231,7 @@
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      var hasDiagonal = this.minorDiagonalChecker();
-      for (var i = 0; i < hasDiagonal.length; i++) {
-        if (hasDiagonal[i] > 1) {
-          return true;
-        }
-      }
-
+      
       return false; // fixme
     }
 
