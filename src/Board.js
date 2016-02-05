@@ -196,29 +196,44 @@
     hasAnyMajorDiagonalConflicts: function() {
      
       var rows = this.rows();
-      var valueStorage = [];
-    var subroutine = function(board){
-        // debugger;
-      for (var i = 0; i < board.length - 1; i ++) {
+      //get rid of the subroutine below
+      //we're going to make a new function that, if we find a 1 value, and there's nothing next to it in a major diagonal, run this new function
+      //this new function recursively checks all the different positions for n rows and values of one
+      //rows[4][3] === undefined {return};
+      //console.log(rows[4]);
+      var subroutine = function(x, y){
+        if (rows[x] === undefined) {
+          return false;
+        }
+        if (rows[x][y] === undefined) {
+          return false;
+        }
+        else if (rows[x][y] === 1) {
+          return true;
+        }
+        else if (rows[x+1] === undefined) {
+          return false;
+        }
+        else if (rows[x+1][y+1] === undefined) {
+          return false;
+        }
+        
+        subroutine((x+1), (y+1));
+        
+        return false;
+      };
 
-        for(var j = 0; j < board[i].length - 1; j++) {
-          if(board[i][j] === 1){
-            console.log(board[i +1][j +1])
-            //console.log('this is board[i]', board[i])
-           // console.log('this is board[i+1]', board[i+1]);
-            if(board[i +1][j +1] === 1) {
-              return true;
-            }// }else{ 
-            //   // console.log(board[i + 2]);
-            //   if(board[i +2][j+2]){
-            //   return subroutine(board[i + 2][j + 2]);
-              //  }
+        for (var x = 0; x < rows.length; x ++) {
+          for(var y = 0; y < rows[x].length; y++) {
+            if(rows[x][y] === 1){
+              if(rows[x + 1][y + 1] === 1) {
+                return true;
+              } else{ 
+                  return subroutine((x+2), (y+2));
+              }
+            }
           }
         }
-      }
-            // return false;
-      }
-        return subroutine(rows);
     },
     // Minor Diagonals - go from top-right to bottom-left
     // --------------------------------------------------------------
@@ -231,7 +246,41 @@
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      
+      var rows = this.rows();
+
+      var subroutine = function(x, y){
+        if (rows[x] === undefined) {
+          return false;
+        }
+        if (rows[x][y] === undefined) {
+          return false;
+        }
+        else if (rows[x][y] === 1) {
+          return true;
+        }
+        else if (rows[x+1] === undefined) {
+          return false;
+        }
+        else if (rows[x+1][y+1] === undefined) {
+          return false;
+        }
+        
+        subroutine((x+1), (y+1));
+        
+        return false;
+      };
+
+        for (var x = 0; x < rows.length; x ++) {
+          for(var y = 0; y < rows[x].length; y++) {
+            if(rows[x][y] === 1){
+              if(rows[x + 1][y + 1] === 1) {
+                return true;
+              } else{ 
+                  return subroutine((x+2), (y+2));
+              }
+            }
+          }
+        }
       return false; // fixme
     }
 

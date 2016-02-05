@@ -49,7 +49,7 @@ describe("Board", function() {
   describe("Board with easy major diagonal conflict", function() {
     verifyConflictTypes(['majorDiagonal', 'queens'], [
       [0, 1, 0, 0],
-      [0, 0, 1, 0],
+      [0, 0, 0, 0],
       [0, 0, 0, 1],
       [0, 0, 0, 0]
     ]);
